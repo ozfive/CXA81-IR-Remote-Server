@@ -64,6 +64,7 @@ Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this 
    sudo cp cambridge.lircd.conf /etc/lirc/lircd.conf.d/
    ````
 
+IMPORTANT SIDENOTE:
 To make changes to the configuration in the future you will need to stop the lircd service, make your changes then start the service again.
    
    Stop lircd daemon:
