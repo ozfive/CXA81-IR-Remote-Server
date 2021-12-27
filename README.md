@@ -39,8 +39,16 @@ You will need to download and flash the Raspberry Pi OS Lite to a Micro-SD card.
 After you have downloaded the OS here: [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/), you need to flash the image to the Micro-SD card.
 To do this you can use [BalenaEtcher](https://www.balena.io/etcher/) which I highly recommend as it does the job well, has some safeguards built in so you don't delete the wrong drive and is cross platform.
 
-When you have the image flashed, created a file called ssh to remote into it [Tutorial Here](https://jayproulx.medium.com/headless-raspberry-pi-zero-w-setup-with-ssh-and-wi-fi-8ddd8c4d2742) have set your wifi in the wpa_supplicant.conf file [Forum Post Here](https://forums.raspberrypi.com/viewtopic.php?t=203716) Boot the Raspberry Pi Zero W for the first time you should be able to remote into it using SSH pi@(your pi IP Address) password raspberry
+When you have the image flashed, created a file called ssh to remote into it [Tutorial Here](https://jayproulx.medium.com/headless-raspberry-pi-zero-w-setup-with-ssh-and-wi-fi-8ddd8c4d2742) have set your wifi in the wpa_supplicant.conf file [Forum Post Here](https://forums.raspberrypi.com/viewtopic.php?t=203716). Boot the Raspberry Pi Zero W for the first time and you should be able to remote into it using 'SSH pi@(your pi IP Address)' on a Linux machine with the default password 'raspberry'. 
 
+To find out the IP Address of your pi you can either visit the web interface of your router and cross your fingers that they have the feature to see all of the machines connected or you could use nmap. The scope of installing NMap is outside of this project but you can follow a tutorial [Here](https://itsfoss.com/how-to-find-what-devices-are-connected-to-network-in-ubuntu/) for Debian Based Linux Operating Systems such as Ubuntu. On Windows/Linux/MacOS you can use the 'arp -a' command in the terminal to retrieve machine names and IP addresses. This isn't always a reliable way of pulling this info, but for this purpose it should work. 
 
-
+<!-- PREREQUISITES -->
 ### Prerequisites
+
+  * LIRC installed on Rasberry OS Lite
+
+   ```sh
+   apt update
+   apt install lirc
+   ```
