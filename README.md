@@ -46,6 +46,20 @@ To find out the IP Address of your pi you can either visit the web interface of 
 <!-- PREREQUISITES -->
 ### Prerequisites
 
+  * Install Git.
+   ```sh
+   sudo apt update
+   sudo apt install git
+   ````
+
+   Verify the Git installation.
+   ```sh
+   git --version
+   ````
+  * Install Golang on RPi Zero
+  [Tutorial](https://www.jeremymorgan.com/tutorials/raspberry-pi/install-go-raspberry-pi/)
+
+
   * Install LIRC on Rasberry OS Lite
 
    ```sh
@@ -57,6 +71,7 @@ To find out the IP Address of your pi you can either visit the web interface of 
    ```sh
    sudo nano /boot/config.txt
    ````
+   
 Where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' change the line to 'dtoverlay=gpio-ir-tx,gpio_pin=13'. I use GPIO 13 in my setup and for the sake of simplicity you should use the same pin for now. This pin is GPIO 13 PWM (physical pin 33). You can find a reference image of the pinout diagram at the bottom of this README.
    
 Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this repository into the '/etc/lirc/lircd.conf.d/' folder.
@@ -65,7 +80,7 @@ Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this 
    ````
 
 IMPORTANT SIDENOTE:
-To make changes to the configuration in the future you will need to stop the lircd service, make your changes then start the service again.
+To make changes to the configuration in the future you will need to stop the lircd service, make your changes, then start the service again.
    
    Stop lircd daemon:
    ```sh
@@ -81,6 +96,13 @@ Now you must reboot your RPi Zero W.
    ```sh
    sudo reboot
    ````
+<!-- Installation -->
+### Installation
+
+For now I will share with you how to clone and compile the go code in this repo. In the future I might just add some binary releases.
+
+Install Go on Rasperry pi. You can follow this tutorial to do get Go installed on the RPi Zero W 
+
 
 <!-- Reference -->
 ### References
