@@ -46,9 +46,17 @@ To find out the IP Address of your pi you can either visit the web interface of 
 <!-- PREREQUISITES -->
 ### Prerequisites
 
-  * LIRC installed on Rasberry OS Lite
+  * Install LIRC on Rasberry OS Lite
 
    ```sh
-   apt update
-   apt install lirc
+   sudo apt update
+   sudo apt install lirc
    ```
+
+   * Edit the /boot/config.txt file.
+   ```sh
+   sudo nano /boot/config.txt
+   ````
+    Where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' change the line to 'dtoverlay=gpio-ir-tx,gpio_pin=13'. I use GPIO 13 in my setup and for the sake of simplicity I reccoment you do as well. 
+
+    [[Place RPi Zero W GPIO pinout here.]]
