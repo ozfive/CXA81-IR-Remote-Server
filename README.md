@@ -64,4 +64,4 @@ Where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' change the line to 'dtoverlay=
 
 
 <img src="https://github.com/ozfive/CXA81-IR-Remote-Server/blob/main/Resources/1634657391RPI_GPIO_BOARD.svg" data-canonical-src="https://github.com/ozfive/CXA81-IR-Remote-Server/blob/main/Resources/1634657391RPI_GPIO_BOARD.svg" width="250" height="800" />
-[Image Source](https://freesvg.org/raspberry-pi-gpio-diagram) Creative Commons License.
+Image Source: (https://freesvg.org/raspberry-pi-gpio-diagram) Creative Commons License. (https://creativecommons.org/publicdomain/zero/1.0/) The author of this image does not in any way shape or form endorse this project.
