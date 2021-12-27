@@ -9,7 +9,7 @@ There are a couple ways that you can connect to the CXA81 besides IR. I've found
 the other methods such as RS232, and the Control Bus (Orange RCA plug on back panel)
 
 I took some inspiration from [Turning a Cambridge Audio Amp On With A Phone](https://gaselli.software/2017/08/25/turning-a-cambridge-audio-amp-on-with-a-phone/) but 
-ultimately had to brute force the codes with the IR Transmitter, a bash script that looped through [Claas Langbehn's RC-5 Template](http://lirc.sourceforge.net/remotes/rc-5/RC-5), a gigantic lirc config file, and some go old fashioned time. 
+ultimately had to brute force the codes with the IR Transmitter, a bash script that looped through [Claas Langbehn's RC-5 Template](http://lirc.sourceforge.net/remotes/rc-5/RC-5), a gigantic lirc config file, and some goood old fashioned time. 
 
 
 ### Built With
@@ -79,8 +79,7 @@ Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this 
    sudo cp cambridge.lircd.conf /etc/lirc/lircd.conf.d/
    ````
 
-IMPORTANT SIDENOTE:
-To make changes to the configuration in the future you will need to stop the lircd service, make your changes, then start the service again.
+IMPORTANT SIDENOTE: To make changes to the configuration in the future you will need to stop the lircd service, make your changes, then start the service again.
    
    Stop lircd daemon:
    ```sh
@@ -97,11 +96,11 @@ Now you must reboot your RPi Zero W.
    sudo reboot
    ````
 <!-- Installation -->
-### Installation
+### Installation/Compile Go Code
 
 For now I will share with you how to clone and compile the go code in this repo. In the future I might just add some binary releases.
 
-Install Go on Rasperry pi. You can follow this tutorial to do get Go installed on the RPi Zero W 
+
 
 
 <!-- Reference -->
