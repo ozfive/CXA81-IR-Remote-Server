@@ -57,6 +57,6 @@ To find out the IP Address of your pi you can either visit the web interface of 
    ```sh
    sudo nano /boot/config.txt
    ````
-    Where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' change the line to 'dtoverlay=gpio-ir-tx,gpio_pin=13'. I use GPIO 13 in my setup and for the sake of simplicity I reccoment you do as well. 
+Where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' change the line to 'dtoverlay=gpio-ir-tx,gpio_pin=13'. I use GPIO 13 in my setup and for the sake of simplicity I reccoment you do as well. 
 
     [[Place RPi Zero W GPIO pinout here.]]
