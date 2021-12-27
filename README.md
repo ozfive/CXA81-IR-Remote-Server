@@ -3,7 +3,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-I initially wanted to control my Cambridge Audio CXA81 amplifier from anywhere in the range of my home Wifi instead of the IR remote control. THen I figured this would be a great project to start open sourced from the beginning. I'm sure if you have come to this page you are looking for something for your CXA81 too. It's unfortunate that Cambridge Audio doesn't connect their StreamMagic app to their CXA series. Currently if you wanted to control your CXA81 you have to have a compatible CXN streamer. I don't have one. You probably don't either. ;)
+I initially wanted to control my Cambridge Audio CXA81 amplifier from anywhere in the range of my home Wifi instead of the IR remote control. I figured this would be a great project to start open sourced from the beginning. I'm sure if you have come to this page you are looking for something for your CXA81 too. It's unfortunate that Cambridge Audio doesn't connect their StreamMagic app to their CXA series. Currently if you wanted to control your CXA81 you have to have a compatible CXN streamer. I don't have one. You probably don't either. ;)
 
 There are a couple ways that you can connect to the CXA81 besides IR. I've found that IR is the quickest/easiest and most robust connection which includes volume control whereas 
 the other methods such as RS232, and the Control Bus (Orange RCA plug on back panel)
