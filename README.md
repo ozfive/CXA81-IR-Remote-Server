@@ -1,21 +1,16 @@
 # CXA81-IR-Remote-Server
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-I initially wanted to control my Cambridge Audio CXA81 amplifier from anywhere in the range of my home Wifi instead of the IR remote control. I figured this would be a great project to start open sourced from the beginning. I'm sure if you have come to this page you are looking for something for your CXA81 too. It's unfortunate that Cambridge Audio doesn't connect their StreamMagic app to their CXA series. Currently if you wanted to control your CXA81 you have to have a compatible CXN streamer. I don't have one. You probably don't either. ;)
+This project aims to enable users to control their Cambridge Audio CXA81 amplifier from anywhere within the range of their home Wi-Fi network, using an open-source server that replaces the need for an IR remote control. The inspiration for this project came from the fact that Canbridge Audio's StreamMagic app is not compatible with the CXA series, and the only way to control the CXA81 is by using a compatible CXN streamer, which not everyone may have.
 
-There are a couple ways that you can connect to the CXA81 besides IR. I've found that IR is the quickest/easiest and most robust connection which includes volume control whereas 
-the other methods such as RS232, and the Control Bus (Orange RCA plug on back panel)
-
-I took some inspiration from [Turning a Cambridge Audio Amp On With A Phone](https://gaselli.software/2017/08/25/turning-a-cambridge-audio-amp-on-with-a-phone/) but 
-ultimately had to brute force the codes with the IR Transmitter, a bash script that looped through [Claas Langbehn's RC-5 Template](http://lirc.sourceforge.net/remotes/rc-5/RC-5), a gigantic lirc configuration file, and some goood old-fashioned time. 
-
+While there are other methods to connect to the CXA81 besides IR, the IR connection is the quickest, easiest, and most robust connection, which includes volume control. The project is build on a Raspberry Pi Zero W and uses an IR transmitter to control the CXA81 amplifier.
 
 ### Built With
 
-
-The links here are just suggestions for the items used in this project. They do not contain any tracking or affiliate links as far as I know. I also don't claim that these are the least expensive products you could pick up either.
+This project is built using the following hardware and software:
 
 Hardware:
   * [Raspberry Pi Zero W](https://www.adafruit.com/product/3400)
@@ -33,79 +28,76 @@ Software:
 <!-- GETTING STARTED -->
 ## Getting Started
 
-As you can see from above this project has been built on a Raspberry Pi Zero W with some IR Transmitters/Receivers. There is a chance that this will work on other Rasperry Pi boards as well. I've tried to keep it as generic as possible but cannot vouch for any other boards/configurations at this point. I plan on testing on a couple boards in the future but for now I can vouche for the Raspberry Pi Zero W.
+To get started with this project, follow these steps:
 
-You will need to download and flash the Raspberry Pi OS Lite to a Micro-SD card. I used a 16GB Micro-SD card just fine here. You won't need a huge one for this to work.
-After you have downloaded the OS here: [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/), you need to flash the image to the Micro-SD card.
-To do this you can use [BalenaEtcher](https://www.balena.io/etcher/) which I highly recommend as it does the job well, has some safeguards built in so you don't delete the wrong drive and is cross platform.
+1. Download and flash the Raspberry Pi OS Lite to a Micro-SD card.
 
-When you have the image flashed, created a file called ssh to remote into it [Tutorial Here](https://jayproulx.medium.com/headless-raspberry-pi-zero-w-setup-with-ssh-and-wi-fi-8ddd8c4d2742) have set your wifi in the wpa_supplicant.conf file [Forum Post Here](https://forums.raspberrypi.com/viewtopic.php?t=203716). Boot the Raspberry Pi Zero W for the first time and you should be able to remote into it. Use 'SSH pi@(your pi IP Address)' on a Linux machine with the default password 'raspberry'. 
+2. Create a file called "ssh" to remote into the Raspberry Pi Zero W.
 
-To find out the IP Address of your pi you can either visit the web interface of your router and cross your fingers that they have the feature to see all the machines connected or you could use nmap. The scope of installing NMap is outside of this project but you can follow a tutorial [Here](https://itsfoss.com/how-to-find-what-devices-are-connected-to-network-in-ubuntu/) for Debian Based Linux Operating Systems such as Ubuntu. On Windows/Linux/MacOS you can use the 'arp -a' command in the terminal to retrieve machine names and IP addresses. This isn't always a reliable way of pulling this info, but for this purpose it should work. 
+3. Set your Wi-Fi in the wpa_supplicant.conf file.
 
-<!-- PREREQUISITES -->
-### Prerequisites
+4. Boot the Raspberry Pi Zero W for the first time and remote into it using "SSH pi@(your pi IP Address)" on a Linux machine with the default password "raspberry".
 
-  * Install Git on the Raspberry Pi Zero W.
-   ```sh
-   sudo apt update
-   sudo apt install git
-   ````
+5. Install Git, Golang, and LIRC on the Raspberry Pi Zero W.
 
-   Verify the Git installation.
-   ```sh
-   git --version
-   ````
-  * Install Golang on RPi Zero
-  [Tutorial](https://www.jeremymorgan.com/tutorials/raspberry-pi/install-go-raspberry-pi/)
+6. Edit the /boot/config.txt file and change the line where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' to 'dtoverlay=gpio-ir-tx,gpio_pin=13'.
 
+7. Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this repository into the '/etc/lirc/lircd.conf.d/' folder.
 
-  * Install LIRC on Raspberry OS Lite
+8. Stop the lircd service, make your changes, then start the service again.
 
-   ```sh
-   sudo apt update
-   sudo apt install lirc
-   ```
+9. Reboot your Raspberry Pi Zero W.
 
-   * Edit the /boot/config.txt file.
-   ```sh
-   sudo nano /boot/config.txt
-   ````
+10. Clone and compile the go code in this repository.
 
-Where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' change the line to 'dtoverlay=gpio-ir-tx,gpio_pin=13'. I use GPIO 13 in my setup and for the sake of simplicity you should use the same pin for now. This pin is GPIO 13 PWM (physical pin 33). You can find a reference image of the pinout diagram at the bottom of this README.
-   
-Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this repository into the '/etc/lirc/lircd.conf.d/' folder.
-   ```sh
-   sudo cp cambridge.lircd.conf /etc/lirc/lircd.conf.d/
-   ````
+## Usage
 
-IMPORTANT SIDENOTE: To make changes to the configuration in the future you will need to stop the lircd service, make your changes, then start the service again.
-   
-   Stop lircd daemon:
-   ```sh
-   sudo service lircd stop
-   ````
+To use the CXA81-IR-Remote-Server, you will need to send HTTP GET requests to the appropriate endpoints on the server. Here are some of the endpoints that are available:
 
-   Start lircd daemon:
-   ```sh
-   sudo service lircd start
-   ````
+      /poweronoff: Turns the power on or off
+      /poweron: Turns the power on
+      /poweroff: Turns the power off
+      /volumeup: Turns the volume up by 1
+      /volumedown: Turns the volume down by 1
+      /sourceA1: Selects source A1
+      /sourceA2: Selects source A2
+      /sourceA3: Selects source A3
+      /sourceA4: Selects source A4
+      /sourcecycle: Cycles through available sources
 
-Now you must reboot your RPi Zero W.
-   ```sh
-   sudo reboot
-   ````
-<!-- Installation -->
-### Installation/Compile Go Code
+To send a request to one of these endpoints, you can use any HTTP client or browser. For example, you can use curl from the command line:
 
-For now, I will share with you how to clone and compile the go code in this repo. In the future I might just add some binary releases.
+```shell
+curl http://<server-ip>:<server-port>/<endpoint>
+```
 
+Replace <server-ip> and <server-port> with the IP address and port of your server, and <endpoint> with the appropriate endpoint from the list above.
 
+## Troubleshooting
 
+If you encounter any issues when setting up or using the CXA81-IR-Remote-Server, here are some things you can try:
+
+* Check that the Raspberry Pi is properly connected to the amplifier and the IR transmitters/receivers.
+* Verify that the correct pins are being used for the IR transmitters/receivers in the /boot/config.txt file.
+* Make sure that the LIRC service is running on the Raspberry Pi.
+* Check that the correct codes are being sent by the server by running the irsend SEND_ONCE command manually from the command line.
+
+If all else fails, you can try asking for help on the project's GitHub page.
+
+## Contributing
+
+If you would like to contribute to the CXA81-IR-Remote-Server project, please follow these steps:
+
+1. Fork the repository on GitHub.
+2. Create a new branch for your changes.
+3. Make your changes and test them thoroughly.
+4. Submit a pull request with your changes.
 
 <!-- Reference -->
 ### References
 
+For a reference image of the pinout diagram, refer to the image located in the Resources folder of this repository. The image source is https://freesvg.org/raspberry-pi-gpio-diagram and is licensed under the Creative Commons License.
 
-<img src="https://github.com/ozfive/CXA81-IR-Remote-Server/blob/main/Resources/1634657391RPI_GPIO_BOARD.svg" data-canonical-src="https://github.com/ozfive/CXA81-IR-Remote-Server/blob/main/Resources/1634657391RPI_GPIO_BOARD.svg" width="250" height="800" />
-Image Source: (https://freesvg.org/raspberry-pi-gpio-diagram) Creative Commons License. (https://creativecommons.org/publicdomain/zero/1.0/) The author of this image does not in any way shape or form endorse this project.
+## License
+
+The CXA81-IR-Remote-Server is distributed under the MIT License. See the LICENSE file for more information.
