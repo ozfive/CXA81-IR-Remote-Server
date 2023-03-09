@@ -52,18 +52,54 @@ To get started with this project, follow these steps:
 
 ## Usage
 
+REFERENCE - IRSend Commands
+
+CXA81
+0000000000000401 SOURCE_A4
+0000000000000403 SOURCE_A3
+0000000000000404 SOURCE_A1
+0000000000000405 SOURCE_A2
+0000000000000408 SOURCE_CYCLE
+0000000000000410 KEY_VOLUMEUP
+0000000000000411 KEY_VOLUMEDOWN
+000000000000040C KEY_SLEEP
+000000000000040D KEY_MUTE_UNMUTE
+000000000000040E POWER_ON
+000000000000040F POWER_OFF
+0000000000000414 DEST_AB
+000000000000041C DEST_A
+000000000000041D DEST_B
+000000000000041E DEST_B1
+0000000000000423 DEST_A1
+0000000000000427 DEST_B2
+0000000000000432 MUTE
+0000000000000433 UNMUTE
+0000000000000434 DISP_ON
+0000000000000435 DISP_OFF
+000000000000064C POWER_ONOFF
+000000000000064E POWERON
+000000000000064F POWEROFF
+
 To use the CXA81-IR-Remote-Server, you will need to send HTTP GET requests to the appropriate endpoints on the server. Here are some of the endpoints that are available:
 
-      /poweronoff: Turns the power on or off
-      /poweron: Turns the power on
-      /poweroff: Turns the power off
-      /volumeup: Turns the volume up by 1
-      /volumedown: Turns the volume down by 1
-      /sourceA1: Selects source A1
-      /sourceA2: Selects source A2
-      /sourceA3: Selects source A3
-      /sourceA4: Selects source A4
-      /sourcecycle: Cycles through available sources
+      /poweronoff - Turns the power on or off
+      /poweron - Turns the power on
+      /poweroff - Turns the power off
+      /volumeup - Turns the volume up by 1
+      /volumedown - Turns the volume down by 1
+      /sleep - Puts the amp into a sleep state
+      /mute - Mutes and unmutes the current audio source
+      /sourceA1 Selects source A1
+      /sourceA2 Selects source A2
+      /sourceA3 Selects source A3
+      /sourceA4 Selects source A4
+      /sourcecycle Cycles through available sources
+      /destAB - Selects the AB destination to output to both destinations
+      /destA - Selects the A destination
+      /destA1 - Selects the A1 destionation
+      /destB - Selects the B destination
+      /destB1 - Selects the B1 destination
+      /destB2 - Selects the B3 destination
 
 To send a request to one of these endpoints, you can use any HTTP client or browser. For example, you can use curl from the command line:
 

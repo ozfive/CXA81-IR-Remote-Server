@@ -1,3 +1,30 @@
+/*
+CXA81 IRSend Commands:
+0000000000000401 SOURCE_A4
+0000000000000403 SOURCE_A3
+0000000000000404 SOURCE_A1
+0000000000000405 SOURCE_A2
+0000000000000408 SOURCE_CYCLE
+0000000000000410 KEY_VOLUMEUP
+0000000000000411 KEY_VOLUMEDOWN
+000000000000040c KEY_SLEEP
+000000000000040d KEY_MUTE_UNMUTE
+000000000000040e POWER_ON
+000000000000040f POWER_OFF
+0000000000000414 DEST_AB
+000000000000041c DEST_A
+000000000000041d DEST_B
+000000000000041e DEST_B1
+0000000000000423 DEST_A1
+0000000000000427 DEST_B2
+0000000000000432 MUTE
+0000000000000433 UNMUTE
+0000000000000434 DISP_ON
+0000000000000435 DISP_OFF
+000000000000064c POWER_ONOFF
+000000000000064e POWERON
+000000000000064f POWEROFF
+*/
 package main
 
 import (
@@ -37,6 +64,12 @@ func main() {
 	router.GET("/sourceA3", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA3_command")))
 	router.GET("/sourceA4", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA4_command")))
 	router.GET("/sourcecycle", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourcecycle_command")))
+	router.GET("/destAB", irsendHandler(viper.GetString("remote_name"), viper.GetString("destAB_command")))
+	router.GET("/destA", irsendHandler(viper.GetString("remote_name"), viper.GetString("destA_command")))
+	router.GET("/destA1", irsendHandler(viper.GetString("remote_name"), viper.GetString("destA1_command")))
+	router.GET("/destB", irsendHandler(viper.GetString("remote_name"), viper.GetString("destB_command")))
+	router.GET("/destB1", irsendHandler(viper.GetString("remote_name"), viper.GetString("destB1_command")))
+	router.GET("/destB2", irsendHandler(viper.GetString("remote_name"), viper.GetString("destB2_command")))
 
 	localIP, err := getOutboundIP()
 	if err != nil {
