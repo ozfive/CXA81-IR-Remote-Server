@@ -1,30 +1,3 @@
-/*
-CXA81 IRSend Commands:
-0000000000000401 SOURCE_A4
-0000000000000403 SOURCE_A3
-0000000000000404 SOURCE_A1
-0000000000000405 SOURCE_A2
-0000000000000408 SOURCE_CYCLE
-0000000000000410 KEY_VOLUMEUP
-0000000000000411 KEY_VOLUMEDOWN
-000000000000040c KEY_SLEEP
-000000000000040d KEY_MUTE_UNMUTE
-000000000000040e POWER_ON
-000000000000040f POWER_OFF
-0000000000000414 DEST_AB
-000000000000041c DEST_A
-000000000000041d DEST_B
-000000000000041e DEST_B1
-0000000000000423 DEST_A1
-0000000000000427 DEST_B2
-0000000000000432 MUTE
-0000000000000433 UNMUTE
-0000000000000434 DISP_ON
-0000000000000435 DISP_OFF
-000000000000064c POWER_ONOFF
-000000000000064e POWERON
-000000000000064f POWEROFF
-*/
 package main
 
 import (
@@ -36,6 +9,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -52,6 +26,8 @@ func main() {
 
 	router := gin.Default()
 
+	gin.SetMode(gin.ReleaseMode)
+
 	router.GET("/poweronoff", irsendHandler(viper.GetString("remote_name"), viper.GetString("poweronoff_command")))
 	router.GET("/poweron", irsendHandler(viper.GetString("remote_name"), viper.GetString("poweron_command")))
 	router.GET("/poweroff", irsendHandler(viper.GetString("remote_name"), viper.GetString("poweroff_command")))
@@ -59,6 +35,9 @@ func main() {
 	router.GET("/volumedown", irsendHandler(viper.GetString("remote_name"), viper.GetString("volumedown_command")))
 	router.GET("/sleep", irsendHandler(viper.GetString("remote_name"), viper.GetString("sleep_command")))
 	router.GET("/mute", irsendHandler(viper.GetString("remote_name"), viper.GetString("mute_command")))
+	router.GET("/unmute", irsendHandler(viper.GetString("remote_name"), viper.GetString("unmute_command")))
+	router.GET("/displayon", irsendHandler(viper.GetString("remote_name"), viper.GetString("display_on_command")))
+	router.GET("/displayoff", irsendHandler(viper.GetString("remote_name"), viper.GetString("display_off_command")))
 	router.GET("/sourceA1", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA1_command")))
 	router.GET("/sourceA2", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA2_command")))
 	router.GET("/sourceA3", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA3_command")))
@@ -84,16 +63,17 @@ func main() {
 	}
 
 	go func() {
-		if err := server.ListenAndServe(); err != nil {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			panic(fmt.Errorf("Fatal error starting server: %s", err))
 		}
 	}()
-
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 	<-sig
 
-	if err := server.Shutdown(context.Background()); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
 		fmt.Println("Error during server shutdown:", err)
 	}
 }
@@ -116,6 +96,5 @@ func getOutboundIP() (string, error) {
 	}
 	defer connection.Close()
 	localAddr := connection.LocalAddr().(*net.UDPAddr)
-
 	return localAddr.IP.String(), nil
 }
