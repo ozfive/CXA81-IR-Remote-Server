@@ -54,7 +54,7 @@ To get started with this project, follow these steps:
 
 A makefile is available to build and deploy this app as a *systemd* service.
 
-The makefile also configures the necessary permissions to run the service on privileged ports (eg. port 80).
+The makefile also configures the necessary permissions to run the service on privileged ports (eg. port 80), and installs the config files from `LIRC-Remote`.
 
 ```shell
 make build
