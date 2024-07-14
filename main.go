@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"net"
+	"html/template"
 	"net/http"
 	"os"
 	"os/exec"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -16,6 +17,8 @@ import (
 )
 
 func main() {
+
+	// Load configuration
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yaml")
@@ -24,41 +27,36 @@ func main() {
 		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
 
-	router := gin.Default()
-
-	gin.SetMode(gin.ReleaseMode)
-
-	router.GET("/poweronoff", irsendHandler(viper.GetString("remote_name"), viper.GetString("poweronoff_command")))
-	router.GET("/poweron", irsendHandler(viper.GetString("remote_name"), viper.GetString("poweron_command")))
-	router.GET("/poweroff", irsendHandler(viper.GetString("remote_name"), viper.GetString("poweroff_command")))
-	router.GET("/volumeup", irsendHandler(viper.GetString("remote_name"), viper.GetString("volumeup_command")))
-	router.GET("/volumedown", irsendHandler(viper.GetString("remote_name"), viper.GetString("volumedown_command")))
-	router.GET("/sleep", irsendHandler(viper.GetString("remote_name"), viper.GetString("sleep_command")))
-	router.GET("/mute", irsendHandler(viper.GetString("remote_name"), viper.GetString("mute_command")))
-	router.GET("/unmute", irsendHandler(viper.GetString("remote_name"), viper.GetString("unmute_command")))
-	router.GET("/displayon", irsendHandler(viper.GetString("remote_name"), viper.GetString("display_on_command")))
-	router.GET("/displayoff", irsendHandler(viper.GetString("remote_name"), viper.GetString("display_off_command")))
-	router.GET("/sourceA1", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA1_command")))
-	router.GET("/sourceA2", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA2_command")))
-	router.GET("/sourceA3", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA3_command")))
-	router.GET("/sourceA4", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourceA4_command")))
-	router.GET("/sourcecycle", irsendHandler(viper.GetString("remote_name"), viper.GetString("sourcecycle_command")))
-	router.GET("/destAB", irsendHandler(viper.GetString("remote_name"), viper.GetString("destAB_command")))
-	router.GET("/destA", irsendHandler(viper.GetString("remote_name"), viper.GetString("destA_command")))
-	router.GET("/destA1", irsendHandler(viper.GetString("remote_name"), viper.GetString("destA1_command")))
-	router.GET("/destB", irsendHandler(viper.GetString("remote_name"), viper.GetString("destB_command")))
-	router.GET("/destB1", irsendHandler(viper.GetString("remote_name"), viper.GetString("destB1_command")))
-	router.GET("/destB2", irsendHandler(viper.GetString("remote_name"), viper.GetString("destB2_command")))
-
-	localIP, err := getOutboundIP()
-	if err != nil {
-		panic(fmt.Errorf("Fatal error getting IP address: %s", err))
-	}
-
+	remoteName := viper.GetString("remote_name")
 	localPort := viper.GetString("port")
 
+	// get hostname from OS
+	hostname, _ := os.Hostname()
+
+	// load LIRC remote commands
+	commands := getIrCommands(remoteName)
+
+	fmt.Println("[Web-server] http://" + hostname + "/")
+
+	router := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+
+	for _, command := range commands {
+		router.GET("/"+strings.ToLower(command), irsendHandler(remoteName, command))
+	}
+
+	router.GET("/", func(c *gin.Context) {
+		htmlContent, err := generateHTML(commands)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error generating HTML: %s", err)
+			return
+		}
+		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(htmlContent))
+	})
+
 	server := &http.Server{
-		Addr:    localIP + ":" + localPort,
+		// Addr:    localIP + ":" + localPort,
+		Addr:    ":" + localPort,
 		Handler: router,
 	}
 
@@ -67,6 +65,7 @@ func main() {
 			panic(fmt.Errorf("Fatal error starting server: %s", err))
 		}
 	}()
+
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 	<-sig
@@ -78,8 +77,28 @@ func main() {
 	}
 }
 
+func getIrCommands(remoteName string) []string {
+	fmt.Println("[EXEC] irsend LIST " + remoteName + " \"\"")
+	cmd := exec.Command("irsend", "LIST", remoteName, "")
+	output, err := cmd.Output()
+	if err != nil {
+		panic(fmt.Errorf("Error listing IR commands: %s %s", strings.Replace(string(output), "\n\n", "\n", -1), strings.Replace(err.Error(), "\n\n", "", -1)))
+	}
+
+	lines := strings.Split(string(output), "\n")
+	var commands []string
+	for _, line := range lines {
+		parts := strings.Fields(line)
+		if len(parts) == 2 {
+			commands = append(commands, parts[1])
+		}
+	}
+	return commands
+}
+
 func irsendHandler(remoteName, command string) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("[EXEC] irsend SEND_ONCE " + remoteName + " " + command)
 		cmd := exec.Command("irsend", "SEND_ONCE", remoteName, command)
 		if err := cmd.Run(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send IR command"})
@@ -89,12 +108,66 @@ func irsendHandler(remoteName, command string) gin.HandlerFunc {
 	}
 }
 
-func getOutboundIP() (string, error) {
-	connection, err := net.Dial("udp", "8.8.8.8:80")
+func generateHTML(commands []string) (string, error) {
+	const tpl = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IR Commands</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .button {
+            display: block;
+            width: 150px;
+            margin: 10px;
+            padding: 15px;
+            text-align: center;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>IR Commands</h1>
+    <div class="container">
+        {{range $index, $element := .}}
+        {{if eq (mod $index 3) 0}}
+        </div><div class="container">
+        {{end}}
+        <a href="/{{$element | ToLower}}" class="button">{{$element}}</a>
+        {{end}}
+    </div>
+</body>
+</html>
+`
+	t, err := template.New("index").Funcs(template.FuncMap{"ToLower": strings.ToLower, "mod": func(i, j int) int { return i % j }}).Parse(tpl)
 	if err != nil {
 		return "", err
 	}
-	defer connection.Close()
-	localAddr := connection.LocalAddr().(*net.UDPAddr)
-	return localAddr.IP.String(), nil
+
+	var htmlContent strings.Builder
+	if err := t.Execute(&htmlContent, commands); err != nil {
+		return "", err
+	}
+
+	return htmlContent.String(), nil
 }
