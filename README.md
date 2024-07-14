@@ -42,7 +42,7 @@ To get started with this project, follow these steps:
 
 6. Edit the /boot/config.txt file and change the line where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' to 'dtoverlay=gpio-ir-tx,gpio_pin=13'.
 
-7. Place the 'cambridge.lircd.conf' file located in the LIRC-Remote folder of this repository into the '/etc/lirc/lircd.conf.d/' folder.
+7. Place the `cambridge.lircd.conf` file located in the `LIRC-Remote` folder of this repository into the `/etc/lirc/lircd.conf.d/` folder.
 
 8. Stop the lircd service, make your changes, then start the service again.
 
@@ -50,36 +50,38 @@ To get started with this project, follow these steps:
 
 10. Clone and compile the go code in this repository.
 
-## Usage
+## Build and install
 
-To use the CXA81-IR-Remote-Server, you will need to send HTTP GET requests to the appropriate endpoints on the server. Here are some of the endpoints that are available:
+A makefile is available to build and deploy this app as a *systemd* service.
 
-      /poweronoff - Turns the power on or off
-      /poweron - Turns the power on
-      /poweroff - Turns the power off
-      /volumeup - Turns the volume up by 1
-      /volumedown - Turns the volume down by 1
-      /sleep - Puts the amp into a sleep state
-      /mute - Mutes and unmutes the current audio source
-      /sourceA1 Selects source A1
-      /sourceA2 Selects source A2
-      /sourceA3 Selects source A3
-      /sourceA4 Selects source A4
-      /sourcecycle Cycles through available sources
-      /destAB - Selects the AB destination to output to both destinations
-      /destA - Selects the A destination
-      /destA1 - Selects the A1 destination
-      /destB - Selects the B destination
-      /destB1 - Selects the B1 destination
-      /destB2 - Selects the B3 destination
-
-To send a request to one of these endpoints, you can use any HTTP client or browser. For example, you can use curl from the command line:
+The makefile also configures the necessary permissions to run the service on privileged ports (eg. port 80).
 
 ```shell
-curl http://<server-ip>:<server-port>/<endpoint>
+make build
+make install
 ```
 
-Replace <server-ip> and <server-port> with the IP address and port of your server, and <endpoint> with the appropriate endpoint from the list above.
+## Usage
+
+The CXA81-IR-Remote-Server generates and index page with the available commands for the remote configured in `config.yaml`.
+
+Each command from the remote then gets mapped to an endpoint.
+
+Triggering the remote commands can be done in two ways:
+
+- Clicking the appropriate button on the index page
+
+- Sending HTTP GET request to the endpoint (e.g curl `http://<server-ip>:<server-port>/<endpoint>`)
+
+The available IR commands can be listed using:
+`irsend LIST <remote_name> "" | cut -f2 -d' '`
+
+Exaple endpoints:
+
+* `/power_onoff` - Turns the power on or off
+* `/power_on` - Turns the power on
+* `/power_off` - Turns the power off
+* etc.
 
 ## Troubleshooting
 
