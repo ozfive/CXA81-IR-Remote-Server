@@ -8,7 +8,7 @@ This project aims to enable users to control their Cambridge Audio CXA81 amplifi
 
 While there are other methods to connect to the CXA81 besides IR, the IR connection is the quickest, easiest, and most robust connection, which includes volume control. The project is build on a Raspberry Pi Zero W and uses an IR transmitter to control the CXA81 amplifier.
 
-![](Resources/screenshot.png | width=100)
+<img src="Resources/screenshot.png" width="400">
 
 ### Built With
 
