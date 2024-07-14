@@ -19,6 +19,9 @@ build_test: build
 	./bin/$(BINARY_NAME)
 
 install: check_irsend
+	sudo cp -vi LIRC-Remote/*.conf /etc/lirc/lircd.conf.d/
+	sudo systemctl restart lircd.service
+
 	@sed \
 		-e 's|{{BINARY_PATH}}|$(BINARY_PATH)|' \
 		-e 's|{{BINARY_NAME}}|$(BINARY_NAME)|' \

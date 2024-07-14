@@ -36,10 +36,7 @@ func main() {
 	// load LIRC remote commands
 	commands := getIrCommands(remoteName)
 
-	for _, command := range commands {
-		fmt.Println("http://" + hostname + "/" + strings.ToLower(command))
-	}
-	fmt.Println("http://" + hostname + "/")
+	fmt.Println("[Web-server] http://" + hostname + "/")
 
 	router := gin.Default()
 	gin.SetMode(gin.ReleaseMode)
@@ -81,7 +78,7 @@ func main() {
 }
 
 func getIrCommands(remoteName string) []string {
-	fmt.Println("EXEC: irsend LIST " + remoteName + " \"\"")
+	fmt.Println("[EXEC] irsend LIST " + remoteName + " \"\"")
 	cmd := exec.Command("irsend", "LIST", remoteName, "")
 	output, err := cmd.Output()
 	if err != nil {
@@ -101,7 +98,7 @@ func getIrCommands(remoteName string) []string {
 
 func irsendHandler(remoteName, command string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("EXEC: irsend SEND_ONCE " + remoteName + " " + command)
+		fmt.Println("[EXEC] irsend SEND_ONCE " + remoteName + " " + command)
 		cmd := exec.Command("irsend", "SEND_ONCE", remoteName, command)
 		if err := cmd.Run(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send IR command"})
