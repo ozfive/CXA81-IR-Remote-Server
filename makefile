@@ -16,6 +16,7 @@ build:
 	sudo setcap 'cap_net_bind_service=+ep' ./bin/$(BINARY_NAME)
 
 build_test: build
+	sudo systemctl stop $(SERVICE_NAME)
 	./bin/$(BINARY_NAME)
 
 install: check_irsend
