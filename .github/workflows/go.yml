@@ -22,5 +22,13 @@ jobs:
         go-version: '1.20'
 
     - name: Cross-compile for Raspberry Pi
-      run: |
-        GOOS=linux GOARCH=arm GOARM=6 go build -o cxa-remote
+      run: GOOS=linux GOARCH=arm GOARM=6 go build -o cxa-remote
+
+    - name: Archive the binary
+      run: tar -czf cxa-remote.tar.gz cxa-remote
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: cxa-remote
+        path: cxa-remote
