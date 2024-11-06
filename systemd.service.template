@@ -1,0 +1,24 @@
+[Unit]
+Description=CXA81 IR Remote Server
+After=network.target lirc.service
+
+[Service]
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+ExecStartPre=/bin/sleep 5
+ExecStart={{BINARY_PATH}}
+Environment=PATH=/usr/bin:/usr/local/bin
+EnvironmentFile=-/etc/default/{{BINARY_NAME}}
+WorkingDirectory={{WORKING_DIR}}
+
+User={{USER}}
+Group={{GROUP}}
+
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier={{BINARY_NAME}}
+
+[Install]
+WantedBy=multi-user.target
