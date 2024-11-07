@@ -17,14 +17,13 @@ This project is built using the following hardware and software:
 Hardware:
   * [Raspberry Pi Zero W](https://www.adafruit.com/product/3400)
   * [BalenaEtcher](https://www.balena.io/etcher/)
-  * [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/) Release date: October 30th 2021 Kernel version: 5.10
   * [Gikfun Digital 38khz Ir Receiver Ir Transmitter Sensor Module Kit (Set of 3 each - 6 total)](https://www.amazon.com/dp/B0816P2545?psc=1&ref=ppx_yo2_dt_b_product_details)
   * [Jumper Wires - Connected 6" (F/F, 20 pack)](https://www.sparkfun.com/products/12796)
 
 <img src="Resources/GPIOwiring.jpg" width="600" height="800">
 
 Software:
-
+  * [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/) Release date: October 30th 2021 Kernel version: 5.10
   * [Go Language](https://go.dev/)
   * [Gin Framework](https://github.com/gin-gonic/gin)
 
