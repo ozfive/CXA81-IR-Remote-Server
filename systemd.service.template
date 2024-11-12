@@ -1,21 +1,38 @@
 [Unit]
 Description=CXA81 IR Remote Server
+
+# Pre-Execution Requirements
 After=network.target lirc.service
+Requires=lirc.service
 
 [Service]
+Type=simple
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 
-ExecStartPre=/bin/sleep 5
-ExecStart={{BINARY_PATH}}
+# Security Enhancements
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+
+# Environment Configuration
 Environment=PATH=/usr/bin:/usr/local/bin
 EnvironmentFile=-/etc/default/{{BINARY_NAME}}
+
+# Working Directory
 WorkingDirectory={{WORKING_DIR}}
 
+# User and Group
 User={{USER}}
 Group={{GROUP}}
 
+# Main Service Execution
+ExecStart={{BINARY_PATH}}
+
+#Restart Policy
 Restart=always
 RestartSec=10
+
+# Logging via journald
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier={{BINARY_NAME}}
