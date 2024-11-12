@@ -1,4 +1,5 @@
-SHELL=/bin/bash -o pipefail
+SHELL=/bin/bash
+.SHELLFLAGS := -euo pipefail -c
 
 BINARY_NAME=cxa-ir
 SERVICE_NAME=$(BINARY_NAME).service
@@ -49,4 +50,4 @@ clean:
 	@sudo systemctl daemon-reload
 	@rm -rf bin
 
-.PHONY: all build clean
+.PHONY: all build build_test install check_irsend clean
