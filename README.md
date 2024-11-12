@@ -44,13 +44,13 @@ To get started with this project, follow these steps:
 
 6. Edit the /boot/config.txt file and change the line where it says '#dtoverlay=gpio-ir-tx,gpio_pin=18' to 'dtoverlay=gpio-ir-tx,gpio_pin=13'.
 
-7. Place the `cambridge.lircd.conf` file located in the `LIRC-Remote` folder of this repository into the `/etc/lirc/lircd.conf.d/` folder.
+7. Clone this repository into your home directory on your Raspberry Pi zero W.
 
-8. Stop the lircd service, make your changes, then start the service again.
+8. This is now done with the make install command shown in the Build and install section below.
 
-9. Reboot your Raspberry Pi Zero W.
+9. Stop the lircd service, make your changes, then start the service again.
 
-10. Clone and compile the go code in this repository.
+10. Reboot your Raspberry Pi Zero W.
 
 ## Build and install
 
@@ -59,8 +59,8 @@ A makefile is available to build and deploy this app as a *systemd* service.
 The makefile also configures the necessary permissions to run the service on privileged ports (eg. port 80), and installs the config files from `LIRC-Remote`.
 
 ```shell
-make build
 make install
+make build
 ```
 
 ## Usage
